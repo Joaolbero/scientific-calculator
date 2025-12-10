@@ -1,0 +1,206 @@
+:root {
+  --bg: #05060a;
+  --panel: #151821;
+  --panel-alt: #181c2a;
+  --text-main: #e5e9f0;
+  --text-muted: #8b97b3;
+  --accent: #3fb8ff;
+  --accent-strong: #4c6fff;
+  --danger: #ff5c7a;
+  --equal: #2dd4bf;
+  --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.6);
+  --radius-lg: 24px;
+  --radius-md: 14px;
+  --transition-fast: 0.14s ease-out;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #111827 0, #020617 55%);
+  color: var(--text-main);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.app-wrapper {
+  display: flex;
+  gap: 24px;
+  max-width: 1080px;
+  width: 100%;
+}
+
+.calculator {
+  flex: 2;
+  background: linear-gradient(145deg, var(--panel), var(--panel-alt));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.display {
+  background: rgba(3, 7, 18, 0.9);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 84px;
+}
+
+.expression {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result {
+  font-size: 1.9rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.keypad button {
+  border: none;
+  border-radius: 18px;
+  padding: 12px 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-main);
+  background: rgba(15, 23, 42, 0.9);
+  cursor: pointer;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast),
+    color var(--transition-fast);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+}
+
+.keypad button:hover {
+  background: #1e293b;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.6);
+}
+
+.keypad button:active {
+  transform: translateY(1px) scale(0.97);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+}
+
+.keypad button[data-op],
+.keypad button[data-fn] {
+  color: var(--accent);
+}
+
+.keypad button[data-action="clear"],
+.keypad button[data-action="clear-all"] {
+  color: var(--danger);
+}
+
+.equals {
+  background: linear-gradient(135deg, var(--equal), #0ea5e9);
+  color: #020617;
+  font-weight: 700;
+}
+
+.equals:hover {
+  background: linear-gradient(135deg, #a7f3d0, #38bdf8);
+}
+
+.equals:active {
+  background: linear-gradient(135deg, #5eead4, #0ea5e9);
+}
+
+.history-panel {
+  flex: 1;
+  background: rgba(15, 23, 42, 0.9);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-panel h2 {
+  font-size: 1rem;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.history-list {
+  margin-top: 4px;
+  overflow-y: auto;
+  max-height: 360px;
+  padding-right: 4px;
+}
+
+.history-item {
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: #020617;
+  margin-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-expression {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.history-result {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .app-wrapper {
+    flex-direction: column;
+  }
+
+  .history-panel {
+    order: -1;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .calculator {
+    padding: 16px;
+  }
+
+  .keypad button {
+    font-size: 0.85rem;
+    padding: 10px 0;
+  }
+
+  .result {
+    font-size: 1.6rem;
+  }
+}
