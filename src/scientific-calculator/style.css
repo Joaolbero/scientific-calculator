@@ -36,6 +36,16 @@ body {
   gap: 24px;
   max-width: 1080px;
   width: 100%;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: app-enter 0.6s var(--transition-fast) forwards;
+}
+
+@keyframes app-enter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .calculator {
@@ -49,8 +59,23 @@ body {
   gap: 14px;
 }
 
+.calculator-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 2px 4px 4px;
+}
+
+.calculator-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.9;
+}
+
 .display {
-  background: rgba(3, 7, 18, 0.9);
+  background: rgba(3, 7, 18, 0.95);
   border-radius: var(--radius-md);
   padding: 14px 18px;
   display: flex;
@@ -65,12 +90,20 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  letter-spacing: 0.04em;
+  font-feature-settings: "tnum" 1;
 }
 
 .result {
   font-size: 1.9rem;
   font-weight: 600;
   text-align: right;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.03em;
+}
+
+.result.error {
+  color: var(--danger);
 }
 
 .keypad {
@@ -87,25 +120,28 @@ body {
   font-size: 0.95rem;
   font-weight: 500;
   color: var(--text-main);
-  background: rgba(15, 23, 42, 0.9);
+  background: radial-gradient(circle at top, #1e293b 0, #020617 80%);
   cursor: pointer;
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
     background var(--transition-fast),
-    color var(--transition-fast);
+    color var(--transition-fast),
+    filter var(--transition-fast);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
 }
 
 .keypad button:hover {
-  background: #1e293b;
+  background: radial-gradient(circle at top, #263040 0, #020617 80%);
   transform: translateY(-1px);
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.6);
 }
 
-.keypad button:active {
-  transform: translateY(1px) scale(0.97);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+.keypad button:active,
+.keypad button.pressed {
+  transform: translateY(1px) scale(0.96);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+  filter: brightness(0.95);
 }
 
 .keypad button[data-op],
@@ -116,6 +152,12 @@ body {
 .keypad button[data-action="clear"],
 .keypad button[data-action="clear-all"] {
   color: var(--danger);
+  background: radial-gradient(circle at top, #3b1420 0, #020617 80%);
+}
+
+.keypad button[data-action="clear"]:hover,
+.keypad button[data-action="clear-all"]:hover {
+  background: radial-gradient(circle at top, #4b1b2b 0, #020617 80%);
 }
 
 .equals {
@@ -128,13 +170,14 @@ body {
   background: linear-gradient(135deg, #a7f3d0, #38bdf8);
 }
 
-.equals:active {
+.equals:active,
+.equals.pressed {
   background: linear-gradient(135deg, #5eead4, #0ea5e9);
 }
 
 .history-panel {
   flex: 1;
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15, 23, 42, 0.96);
   border-radius: var(--radius-lg);
   padding: 16px;
   box-shadow: var(--shadow-soft);
@@ -144,9 +187,9 @@ body {
 }
 
 .history-panel h2 {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--text-muted);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -159,12 +202,13 @@ body {
 
 .history-item {
   padding: 8px 10px;
-  border-radius: 12px;
-  background: #020617;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #020617, #020617);
   margin-bottom: 6px;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  border-left: 3px solid rgba(63, 184, 255, 0.4);
 }
 
 .history-expression {
@@ -179,6 +223,24 @@ body {
   text-align: right;
 }
 
+/* Scrollbar temática (só no histórico) */
+.history-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.history-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+  background: #111827;
+  border-radius: 999px;
+}
+
+.history-list::-webkit-scrollbar-thumb:hover {
+  background: #1f2937;
+}
+
 @media (max-width: 900px) {
   .app-wrapper {
     flex-direction: column;
@@ -186,7 +248,6 @@ body {
 
   .history-panel {
     order: -1;
-    flex-direction: column;
   }
 }
 
