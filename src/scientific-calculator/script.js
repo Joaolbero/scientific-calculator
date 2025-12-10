@@ -12,6 +12,16 @@ function updateDisplay() {
   resultEl.textContent = lastResult !== null ? lastResult : currentExpression || "0";
 }
 
+function setErrorDisplay() {
+  lastResult = "Erro";
+  resultEl.classList.add("error");
+  updateDisplay();
+}
+
+function clearErrorDisplay() {
+  resultEl.classList.remove("error");
+}
+
 function addHistoryItem(expr, res) {
   history.unshift({ expr, res });
   if (history.length > 15) {
@@ -38,12 +48,14 @@ function addHistoryItem(expr, res) {
 }
 
 function insertValue(value) {
+  clearErrorDisplay();
   currentExpression += value;
   lastResult = null;
   updateDisplay();
 }
 
 function wrapFunction(fnName) {
+  clearErrorDisplay();
   if (!currentExpression) {
     currentExpression = fnName + "(";
   } else {
@@ -54,12 +66,14 @@ function wrapFunction(fnName) {
 }
 
 function clearEntry() {
+  clearErrorDisplay();
   currentExpression = currentExpression.slice(0, -1);
   lastResult = null;
   updateDisplay();
 }
 
 function clearAll() {
+  clearErrorDisplay();
   currentExpression = "";
   lastResult = null;
   updateDisplay();
@@ -69,6 +83,7 @@ function normalizeExpression(expr) {
   let normalized = expr;
 
   normalized = normalized.replace(/π/g, "Math.PI");
+  normalized = normalized.replace(/\be\b/g, "Math.E");
   normalized = normalized.replace(/sin\(/g, "Math.sin(");
   normalized = normalized.replace(/cos\(/g, "Math.cos(");
   normalized = normalized.replace(/tan\(/g, "Math.tan(");
@@ -86,29 +101,48 @@ function evaluateExpression() {
     return;
   }
 
+  clearErrorDisplay();
+
   let exprToEval = currentExpression;
 
   try {
     exprToEval = normalizeExpression(exprToEval);
-    const result = Function(`"use strict"; return (${exprToEval})`)();
-    if (Number.isFinite(result)) {
-      const rounded = Math.round(result * 1e10) / 1e10;
-      lastResult = rounded.toString();
-      addHistoryItem(currentExpression, lastResult);
-      currentExpression = lastResult;
-      updateDisplay();
+    const result = Function('"use strict"; return (' + exprToEval + ")")();
+
+    if (typeof result !== "number" || Number.isNaN(result)) {
+      setErrorDisplay();
+      return;
     }
-  } catch (e) {}
+
+    let displayValue;
+
+    if (!Number.isFinite(result)) {
+      displayValue = "∞";
+    } else {
+      displayValue = Math.round(result * 1e10) / 1e10;
+    }
+
+    lastResult = displayValue.toString();
+    addHistoryItem(currentExpression, lastResult);
+
+    if (Number.isFinite(result)) {
+      currentExpression = lastResult;
+    }
+
+    updateDisplay();
+  } catch (e) {
+    setErrorDisplay();
+  }
 }
 
-keypad.addEventListener("click", event => {
-  const target = event.target;
-  if (!(target instanceof HTMLButtonElement)) return;
-
+function handleButtonClick(target) {
   const value = target.getAttribute("data-value");
   const op = target.getAttribute("data-op");
   const fn = target.getAttribute("data-fn");
   const action = target.getAttribute("data-action");
+
+  target.classList.add("pressed");
+  setTimeout(() => target.classList.remove("pressed"), 120);
 
   if (value !== null) {
     insertValue(value);
@@ -150,6 +184,102 @@ keypad.addEventListener("click", event => {
   if (action === "equals") {
     evaluateExpression();
   }
+}
+
+keypad.addEventListener("click", event => {
+  const target = event.target;
+  if (!(target instanceof HTMLButtonElement)) return;
+  handleButtonClick(target);
 });
+
+function handleKeydown(event) {
+  const key = event.key;
+
+  if (key >= "0" && key <= "9") {
+    insertValue(key);
+    return;
+  }
+
+  if (key === "." || key === ",") {
+    insertValue(".");
+    return;
+  }
+
+  if (key === "+" || key === "-" || key === "*" || key === "/") {
+    insertValue(key);
+    return;
+  }
+
+  if (key === "(" || key === ")") {
+    insertValue(key);
+    return;
+  }
+
+  if (key === "Enter" || key === "=") {
+    event.preventDefault();
+    evaluateExpression();
+    return;
+  }
+
+  if (key === "Backspace") {
+    event.preventDefault();
+    clearEntry();
+    return;
+  }
+
+  if (key === "Escape") {
+    event.preventDefault();
+    clearAll();
+    return;
+  }
+
+  const lower = key.toLowerCase();
+
+  if (lower === "s") {
+    wrapFunction("sin");
+    return;
+  }
+
+  if (lower === "c") {
+    wrapFunction("cos");
+    return;
+  }
+
+  if (lower === "t") {
+    wrapFunction("tan");
+    return;
+  }
+
+  if (lower === "l") {
+    wrapFunction("log");
+    return;
+  }
+
+  if (lower === "n") {
+    wrapFunction("ln");
+    return;
+  }
+
+  if (lower === "r") {
+    insertValue("√(");
+    return;
+  }
+
+  if (lower === "p") {
+    insertValue("π");
+    return;
+  }
+
+  if (lower === "e") {
+    insertValue("e");
+    return;
+  }
+
+  if (key === "^") {
+    insertValue("^");
+  }
+}
+
+window.addEventListener("keydown", handleKeydown);
 
 updateDisplay();
