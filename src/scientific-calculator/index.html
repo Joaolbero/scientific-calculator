@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Scientific Calculator</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-wrapper">
+    <div class="calculator">
+      <div class="display">
+        <div class="expression" id="expression"></div>
+        <div class="result" id="result">0</div>
+      </div>
+      <div class="keypad">
+        <button data-action="clear-all">AC</button>
+        <button data-action="clear">C</button>
+        <button data-value="(">(</button>
+        <button data-value=")">)</button>
+
+        <button data-fn="sin">sin</button>
+        <button data-fn="cos">cos</button>
+        <button data-fn="tan">tan</button>
+        <button data-op="/">÷</button>
+
+        <button data-fn="log">log</button>
+        <button data-fn="ln">ln</button>
+        <button data-fn="sqrt">√</button>
+        <button data-op="*">×</button>
+
+        <button data-value="7">7</button>
+        <button data-value="8">8</button>
+        <button data-value="9">9</button>
+        <button data-op="-">−</button>
+
+        <button data-value="4">4</button>
+        <button data-value="5">5</button>
+        <button data-value="6">6</button>
+        <button data-op="+">+</button>
+
+        <button data-value="1">1</button>
+        <button data-value="2">2</button>
+        <button data-value="3">3</button>
+        <button data-fn="pow">xʸ</button>
+
+        <button data-value="0">0</button>
+        <button data-value=".">.</button>
+        <button data-fn="pi">π</button>
+        <button class="equals" data-action="equals">=</button>
+      </div>
+    </div>
+
+    <aside class="history-panel">
+      <h2>Histórico</h2>
+      <div class="history-list" id="history-list"></div>
+    </aside>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
