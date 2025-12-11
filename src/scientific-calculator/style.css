@@ -223,22 +223,24 @@ body {
   text-align: right;
 }
 
-/* Scrollbar temática (só no histórico) */
 .history-list::-webkit-scrollbar {
-  width: 6px;
+  width: 7px;
 }
 
 .history-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.history-list::-webkit-scrollbar-thumb {
-  background: #111827;
+  background: rgba(15, 23, 42, 0.9);
   border-radius: 999px;
 }
 
-.history-list::-webkit-scrollbar-thumb:hover {
+.history-list::-webkit-scrollbar-thumb {
   background: #1f2937;
+  border-radius: 999px;
+  border: 1px solid rgba(63, 184, 255, 0.7);
+}
+
+.history-list::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+  border-color: rgba(63, 184, 255, 1);
 }
 
 @media (max-width: 900px) {
